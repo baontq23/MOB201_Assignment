@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">MOB201_Assignment</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="news">News</string>
+    <string name="music">Music</string>
+    <string name="profile">Profile</string>
+    <string name="web_client_id">23742456234-vboqihj5odjjidio7554tj3g5petnqq7.apps.googleusercontent.com</string>
+    <string name="login_empty_email">Chưa nhập email!</string>
+    <string name="login_empty_password">Chưa nhập mật khẩu!</string>
+</resources>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_background"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <ImageView
+        android:layout_width="74dp"
+        android:layout_height="74dp"
+        android:layout_gravity="center"
+        android:layout_marginVertical="10dp"
+        android:src="@drawable/icon_app" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="News - Media"
+        android:textColor="#08979C"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Đăng nhập tài khoản"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_label_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email" />
+
+        <EditText
+            android:id="@+id/edt_auth_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_label_email"
+            android:layout_marginVertical="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/border_edit_text"
+            android:inputType="text"
+            android:padding="8dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_label_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password" />
+
+        <EditText
+            android:id="@+id/edt_auth_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_label_password"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/border_edit_text"
+            android:inputType="textPassword"
+            android:padding="8dp" />
+    </RelativeLayout>
+
+    <CheckBox
+        android:id="@+id/chk_auth_remember"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lưu phiên đăng nhập"
+        android:textColor="@color/white" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_auth_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Đăng nhập"
+        android:textAllCaps="false"
+        app:cornerRadius="5dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="30dp">
+
+        <TextView
+            android:id="@+id/tvText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="Hoặc tiếp tục với"
+            android:textColor="#6B7280" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/tvText"
+            android:background="#D1D5DB" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/tvText"
+            android:background="#D1D5DB" />
+    </RelativeLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_auth_google_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:drawableLeft="@drawable/ic_google_24"
+        android:fontFamily="@font/roboto_bold"
+        android:padding="10dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:text="Đăng nhập bằng Google"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        app:cornerRadius="5dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_auth_guest_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:fontFamily="@font/roboto_bold"
+        android:padding="15dp"
+        android:text="Sử dụng với tài khoản khách"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        app:cornerRadius="5dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bạn chưa có tài khoản ?" />
+
+        <TextView
+            android:id="@+id/tv_auth_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Đăng ký"
+            android:textStyle="bold"
+            android:textColor="@color/primaryColor" />
+    </RelativeLayout>
+
+</LinearLayout>
