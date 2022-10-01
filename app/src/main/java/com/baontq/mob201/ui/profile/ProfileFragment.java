@@ -26,6 +26,7 @@ import com.baontq.mob201.service.AuthService;
 import com.baontq.mob201.ui.auth.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import java.util.Objects;
 
@@ -62,7 +63,16 @@ public class ProfileFragment extends Fragment {
     }
 
     private void handleEditProfile() {
-        profileViewModel.setFullName("Test");
+        if (binding.llInformation.getVisibility() == View.INVISIBLE) {
+            binding.llInformation.setVisibility(View.VISIBLE);
+            binding.btnProfileEdit.setText("Xong");
+            binding.btnProfileEdit.setIconResource(R.drawable.ic_baseline_done_24);
+        }else {
+            binding.llInformation.setVisibility(View.INVISIBLE);
+            binding.btnProfileEdit.setText("Sửa thông tin");
+            binding.btnProfileEdit.setIconResource(R.drawable.ic_baseline_edit_24);
+        }
+
     }
 
      class ResponseReceiver extends BroadcastReceiver {
