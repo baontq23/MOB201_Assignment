@@ -52,20 +52,33 @@
         android:text="email@mail.com" />
 
     <RelativeLayout
+        android:id="@+id/rl_user_action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_profile_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:drawableLeft="@drawable/ic_outline_logout_24"
+            android:drawableTint="@color/white"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Đăng nhập"
+            android:visibility="gone"
+            app:backgroundTint="#3949AB" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_profile_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="10dp"
+            android:layout_toStartOf="@id/btn_profile_logout"
             android:drawableLeft="@drawable/ic_baseline_edit_24"
             android:drawableTint="@color/white"
             android:fontFamily="@font/roboto_bold"
-            android:layout_toStartOf="@id/btn_profile_logout"
-            android:layout_marginEnd="10dp"
-            android:layout_alignParentStart="true"
             android:text="Sửa thông tin"
             app:backgroundTint="#3949AB" />
 
@@ -91,8 +104,8 @@
         android:id="@+id/ll_information"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="invisible">
 
 
         <LinearLayout

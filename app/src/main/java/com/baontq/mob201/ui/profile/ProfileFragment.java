@@ -43,6 +43,10 @@ public class ProfileFragment extends Fragment {
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         user = FirebaseAuth.getInstance().getCurrentUser();
         binding = FragmentProfileBinding.inflate(inflater, container, false);
+        binding.btnProfileLogin.setOnClickListener(v -> {
+            startActivity(new Intent(getContext(), LoginActivity.class));
+            requireActivity().finish();
+        });
         binding.btnProfileLogout.setOnClickListener(v -> handleLogout());
         binding.btnProfileEdit.setOnClickListener(v -> handleEditProfile());
         profileViewModel.getFullName().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -51,8 +55,7 @@ public class ProfileFragment extends Fragment {
                 binding.tvProfileFullName.setText(s);
             }
         });
-        binding.tvProfileEmail.setText(user.getEmail());
-        binding.tvProfileFullName.setText("Bao Nguyen");
+        setInformation();
         return binding.getRoot();
     }
 
@@ -62,12 +65,25 @@ public class ProfileFragment extends Fragment {
         requireActivity().startService(intent);
     }
 
+    private void setInformation() {
+        if (user == null) {
+            binding.btnProfileLogin.setVisibility(View.VISIBLE);
+            binding.btnProfileEdit.setVisibility(View.GONE);
+            binding.btnProfileLogout.setVisibility(View.GONE);
+            binding.tvProfileEmail.setText("");
+            binding.tvProfileFullName.setText("Guest");
+        } else {
+            binding.tvProfileEmail.setText(user.getEmail());
+            binding.tvProfileFullName.setText("Bao Nguyen");
+        }
+    }
+
     private void handleEditProfile() {
         if (binding.llInformation.getVisibility() == View.INVISIBLE) {
             binding.llInformation.setVisibility(View.VISIBLE);
             binding.btnProfileEdit.setText("Xong");
             binding.btnProfileEdit.setIconResource(R.drawable.ic_baseline_done_24);
-        }else {
+        } else {
             binding.llInformation.setVisibility(View.INVISIBLE);
             binding.btnProfileEdit.setText("Sửa thông tin");
             binding.btnProfileEdit.setIconResource(R.drawable.ic_baseline_edit_24);
@@ -75,7 +91,7 @@ public class ProfileFragment extends Fragment {
 
     }
 
-     class ResponseReceiver extends BroadcastReceiver {
+    class ResponseReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
