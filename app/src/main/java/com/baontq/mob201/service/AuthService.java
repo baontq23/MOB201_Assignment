@@ -17,7 +17,9 @@ import com.google.firebase.auth.FirebaseAuth;
 public class AuthService extends IntentService {
     private static final String TAG = "AUTH_SERVICE";
     public static final String PARAM_LOGIN_STATUS = "auth_login";
+    public static final String PARAM_REGISTER_STATUS = "auth_register";
     public static final String ACTION_LOGIN_WITH_EMAIL = "com.baontq.mob201.service.action.LOGIN_WITH_EMAIL";
+    public static final String ACTION_REGISTER_WITH_EMAIL = "com.baontq.mob201.service.action.REGISTER_WITH_EMAIL";
     public static final String ACTION_LOGOUT = "com.baontq.mob201.service.action.LOGOUT";
     public static final int RESULT_LOGIN_FAILED = 401;
     public static final int RESULT_LOGIN_SUCCESS = 200;

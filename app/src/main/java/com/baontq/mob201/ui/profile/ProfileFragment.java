@@ -49,12 +49,6 @@ public class ProfileFragment extends Fragment {
         });
         binding.btnProfileLogout.setOnClickListener(v -> handleLogout());
         binding.btnProfileEdit.setOnClickListener(v -> handleEditProfile());
-        profileViewModel.getFullName().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                binding.tvProfileFullName.setText(s);
-            }
-        });
         setInformation();
         return binding.getRoot();
     }
@@ -74,7 +68,7 @@ public class ProfileFragment extends Fragment {
             binding.tvProfileFullName.setText("Guest");
         } else {
             binding.tvProfileEmail.setText(user.getEmail());
-            binding.tvProfileFullName.setText("Bao Nguyen");
+            binding.tvProfileFullName.setText(user.getDisplayName().equalsIgnoreCase("") ? "No name" : user.getDisplayName());
         }
     }
 
