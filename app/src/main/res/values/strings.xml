@@ -15,4 +15,7 @@
     <string name="register_empty_re_password">Chưa nhập lại mật khẩu!</string>
     <string name="register_repass_not_vaild">Mật khẩu giữa 2 lần nhập không trùng khớp!</string>
     <string name="register_success">Đăng ký tài khoản thành công!</string>
+    <string name="notification">Thông báo</string>
+    <string name="require_login">Bạn cần phải đăng nhập để sử dụng tính năng này!</string>
+    <string name="close">Đóng</string>
 </resources>

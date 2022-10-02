@@ -34,6 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
     private ResponseReceiver receiver = new ResponseReceiver();
     private ProgressBarDialog progressBarDialog;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
