@@ -68,7 +68,7 @@ public class ProfileFragment extends Fragment {
             binding.tvProfileFullName.setText("Guest");
         } else {
             binding.tvProfileEmail.setText(user.getEmail());
-            binding.tvProfileFullName.setText(user.getDisplayName().equalsIgnoreCase("") ? "No name" : user.getDisplayName());
+            binding.tvProfileFullName.setText(user.getDisplayName() == null ? "No name" : user.getDisplayName());
         }
     }
 

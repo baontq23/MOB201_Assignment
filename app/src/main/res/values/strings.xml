@@ -10,4 +10,9 @@
     <string name="login_empty_email">Chưa nhập email!</string>
     <string name="login_empty_password">Chưa nhập mật khẩu!</string>
     <string name="password">Mật khẩu</string>
+    <string name="register_empty_email">Chưa nhập email!</string>
+    <string name="register_empty_password">Chưa nhập mật khẩu!</string>
+    <string name="register_empty_re_password">Chưa nhập lại mật khẩu!</string>
+    <string name="register_repass_not_vaild">Mật khẩu giữa 2 lần nhập không trùng khớp!</string>
+    <string name="register_success">Đăng ký tài khoản thành công!</string>
 </resources>

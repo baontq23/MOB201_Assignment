@@ -8,11 +8,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.baontq.mob201.MainActivity;
+import com.baontq.mob201.R;
 import com.baontq.mob201.ui.auth.LoginActivity;
+import com.baontq.mob201.ui.auth.RegisterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.kongzue.dialogx.dialogs.PopTip;
 
 public class AuthService extends IntentService {
     private static final String TAG = "AUTH_SERVICE";
@@ -31,12 +35,12 @@ public class AuthService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         if (intent != null) {
             Intent broadcastIntent = new Intent();
             switch (intent.getAction()) {
                 case ACTION_LOGIN_WITH_EMAIL:
                     broadcastIntent.setAction(ACTION_LOGIN_WITH_EMAIL);
-                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
                     String email = intent.getStringExtra("user_email");
                     String password = intent.getStringExtra("user_password");
                     mAuth.signInWithEmailAndPassword(email, password)
@@ -50,6 +54,25 @@ public class AuthService extends IntentService {
                                     } else {
                                         broadcastIntent.putExtra(PARAM_LOGIN_STATUS, RESULT_LOGIN_FAILED);
                                         Log.i(TAG, "Information not valid");
+                                        sendBroadcast(broadcastIntent);
+                                    }
+                                }
+                            });
+                    break;
+                case ACTION_REGISTER_WITH_EMAIL:
+                    broadcastIntent.setAction(ACTION_REGISTER_WITH_EMAIL);
+                    email = intent.getStringExtra("user_email");
+                    password = intent.getStringExtra("user_password");
+                    mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        broadcastIntent.putExtra(PARAM_REGISTER_STATUS, RESULT_LOGIN_SUCCESS);
+                                        sendBroadcast(broadcastIntent);
+                                    } else {
+                                        broadcastIntent.putExtra(PARAM_REGISTER_STATUS, RESULT_LOGIN_FAILED);
+                                        Log.i(TAG, "Register canceled!");
                                         sendBroadcast(broadcastIntent);
                                     }
                                 }
