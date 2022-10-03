@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_refresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.permission.RequestPermissionView">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#66333333"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginTop="175dp"
+            android:elevation="1dp"
+            android:src="@drawable/storage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/backward_color"
+            app:layout_constraintBottom_toBottomOf="@id/image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/backward_color"
+            android:gravity="center"
+            android:text="Yêu cầu cấp quyền"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/image" />
+
+        <TextView
+            android:id="@+id/detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/backward_color"
+            android:gravity="center"
+            android:paddingStart="20dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="8dp"
+            android:text="Ứng dụng cần quyền sử dụng bộ nhớ để hoạt động"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/title" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:text="Test3"
+            android:textColor="#33ffffff"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/image" />
+
+        <TextView
+            android:id="@+id/btn_allow"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="40dp"
+            android:background="@drawable/green_round_support_touch"
+            android:clickable="true"
+            android:elevation="1dp"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="Cho phép"
+            android:textColor="#DF007AFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/detail" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/backward_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/detail" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
