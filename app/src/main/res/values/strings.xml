@@ -18,4 +18,10 @@
     <string name="notification">Thông báo</string>
     <string name="require_login">Bạn cần phải đăng nhập để sử dụng tính năng này!</string>
     <string name="close">Đóng</string>
+    <string name="caution_exit">Bạn có muốn thoát chương trình ?</string>
+    <string name="cancel">Huỷ bỏ</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="could_not_create_playlist">Không thể tạo danh sách phát!</string>
+    <string name="inserted_x_songs_into_playlist_x">Inserted %1$d songs into the playlist %2$s.</string>
+    <string name="created_playlist_x">Created playlist %1$s.</string>
 </resources>

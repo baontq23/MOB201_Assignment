@@ -9,7 +9,17 @@
         android:id="@+id/navigation_home"
         android:name="com.baontq.mob201.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_home_to_list_music"
+            app:destination="@id/navigation_list_song"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@+id/navigation_list_song"
+            app:popUpToInclusive="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_news"
@@ -27,4 +37,9 @@
         android:name="com.baontq.mob201.ui.profile.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/navigation_list_song"
+        android:name="com.baontq.mob201.ui.home.tab.listsong.ListSongFragment"
+        android:label="List song"
+        tools:layout="@layout/fragment_list_song" />
 </navigation>

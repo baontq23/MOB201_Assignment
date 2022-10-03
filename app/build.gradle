@@ -39,6 +39,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "com.github.kongzue.DialogX:DialogX:${dialogx_version}"
     implementation "com.github.kongzue.DialogX:DialogXMIUIStyle:${dialogx_version}"
+    implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation 'androidx.navigation:navigation-fragment:2.5.2'
