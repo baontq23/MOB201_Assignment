@@ -139,10 +139,11 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
         android:fontFamily="@font/roboto_bold"
+        android:background="@drawable/ripple_effect"
         android:padding="15dp"
         android:text="Sử dụng với tài khoản khách"
         android:textAllCaps="false"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         app:cornerRadius="5dp" />
 
     <RelativeLayout
