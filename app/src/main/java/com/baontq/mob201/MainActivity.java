@@ -22,12 +22,17 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
 
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0 ){
+            getSupportFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
 }
