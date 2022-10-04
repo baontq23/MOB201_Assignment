@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.baontq.mob201.R;
 import com.baontq.mob201.databinding.FragmentHomeBinding;
 import com.baontq.mob201.ui.home.adapter.HomeViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
@@ -26,13 +27,13 @@ public class HomeFragment extends Fragment {
         new TabLayoutMediator(binding.tlHome, binding.vpHome, (tab, position) -> {
             switch (position) {
                 case 0:
-                    tab.setText("Trang chủ");
+                    tab.setText(R.string.feature);
                     break;
                 case 1:
-                    tab.setText("Bài hát");
+                    tab.setText(R.string.song);
                     break;
                 case 2:
-                    tab.setText("Yêu thích");
+                    tab.setText(R.string.favorite);
                     break;
             }
             binding.tlHome.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

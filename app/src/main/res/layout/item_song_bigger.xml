@@ -5,9 +5,8 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="70dp"
-    android:paddingStart="10dp"
     android:paddingTop="2dp"
-    android:paddingEnd="10dp"
+    android:layout_marginTop="10dp"
     android:paddingBottom="2dp">
 
     <View
@@ -31,14 +30,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/number"
+        android:id="@+id/index"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="10dp"
         android:gravity="center"
         android:textColor="#AAEEEEEE"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +50,7 @@
         android:layout_height="48dp"
         android:src="@drawable/music_empty"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/number"
+        app:layout_constraintStart_toEndOf="@id/index"
         app:layout_constraintTop_toTopOf="parent"
         app:riv_border_color="#66F5F5F5"
         app:riv_border_width="1dp"
@@ -100,17 +99,4 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_more_horiz_black_24dp"
         app:tint="@color/FlatWhite" />
-
-    <ImageView
-        android:id="@+id/quick_play_pause"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:alpha="0.55"
-        android:elevation="1dp"
-        android:padding="12dp"
-        app:layout_constraintBottom_toBottomOf="@id/image"
-        app:layout_constraintEnd_toEndOf="@id/image"
-        app:layout_constraintStart_toStartOf="@id/image"
-        app:layout_constraintTop_toTopOf="@id/image"
-        app:tint="#394545" />
 </androidx.constraintlayout.widget.ConstraintLayout>

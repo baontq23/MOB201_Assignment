@@ -24,4 +24,7 @@
     <string name="could_not_create_playlist">Không thể tạo danh sách phát!</string>
     <string name="inserted_x_songs_into_playlist_x">Inserted %1$d songs into the playlist %2$s.</string>
     <string name="created_playlist_x">Created playlist %1$s.</string>
+    <string name="favorite">Yêu thích</string>
+    <string name="song">Bài hát</string>
+    <string name="feature">Nổi bật</string>
 </resources>

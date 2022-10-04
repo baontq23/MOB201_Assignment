@@ -7,6 +7,7 @@
     tools:context=".ui.home.tab.listsong.ListSongFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_list_song"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/item_song_normal" />

@@ -44,8 +44,8 @@ public class MusicUntil {
         return new Song(id, title, trackNumber, year, duration, data, dateModified, albumId, albumName, artistId, artistName);
     }
 
-    public static List<Song> getListSong(final Context context) {
-        List<Song> songs = new ArrayList<>();
+    public static ArrayList<Song> getListSong(final Context context) {
+        ArrayList<Song> songs = new ArrayList<>();
         Cursor cursor = makeSongCursor(context);
         if (cursor != null && cursor.moveToFirst()) {
             do {

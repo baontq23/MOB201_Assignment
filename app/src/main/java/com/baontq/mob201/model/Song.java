@@ -1,19 +1,27 @@
 package com.baontq.mob201.model;
 
-public class Song {
-    public static final Song EMPTY_SONG = new Song(-1, "", -1, -1, -1, "", -1, -1, "", -1, "");
+import android.os.Parcel;
+import android.os.Parcelable;
 
-    private final int id;
+import androidx.annotation.NonNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Song implements Parcelable {
+    public static Song EMPTY_SONG = new Song(-1, "", -1, -1, -1, "", -1, -1, "", -1, "");
+
+    private int id;
     private String title;
-    private final int trackNumber;
-    private final int year;
-    private final long duration;
-    private final String data;
-    private final long dateModified;
-    private final int albumId;
-    private final String albumName;
-    private final int artistId;
-    private final String artistName;
+    private int trackNumber;
+    private int year;
+    private long duration;
+    private String data;
+    private long dateModified;
+    private int albumId;
+    private String albumName;
+    private int artistId;
+    private String artistName;
 
     public Song(int id, String title, int trackNumber, int year, long duration, String data, long dateModified, int albumId, String albumName, int artistId, String artistName) {
         this.id = id;
@@ -28,6 +36,34 @@ public class Song {
         this.artistId = artistId;
         this.artistName = artistName;
     }
+
+    protected Song(Parcel in) {
+        id = in.readInt();
+        title = in.readString();
+        trackNumber = in.readInt();
+        year = in.readInt();
+        duration = in.readLong();
+        data = in.readString();
+        dateModified = in.readLong();
+        albumId = in.readInt();
+        albumName = in.readString();
+        artistId = in.readInt();
+        artistName = in.readString();
+    }
+
+    public Song() {
+    }
+    public static final Creator<Song> CREATOR = new Creator<Song>() {
+        @Override
+        public Song createFromParcel(Parcel in) {
+            return new Song(in);
+        }
+
+        @Override
+        public Song[] newArray(int size) {
+            return new Song[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -75,5 +111,41 @@ public class Song {
 
     public String getArtistName() {
         return artistName;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(title);
+        dest.writeInt(trackNumber);
+        dest.writeInt(year);
+        dest.writeLong(duration);
+        dest.writeString(data);
+        dest.writeLong(dateModified);
+        dest.writeInt(albumId);
+        dest.writeString(albumName);
+        dest.writeInt(artistId);
+        dest.writeString(artistName);
+    }
+
+    public Map<String, Object> getMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("title", title);
+        map.put("trackNumber", trackNumber);
+        map.put("year", year);
+        map.put("duration", duration);
+        map.put("data", data);
+        map.put("dateModified", dateModified);
+        map.put("albumId", albumId);
+        map.put("albumName", albumName);
+        map.put("artistId", artistId);
+        map.put("artistName", artistName);
+        return map;
     }
 }
