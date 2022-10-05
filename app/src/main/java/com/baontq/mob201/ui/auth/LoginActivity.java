@@ -75,9 +75,9 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         signInRequest = BeginSignInRequest.builder()
-                .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
-                        .setSupported(true)
-                        .build())
+//                .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
+//                        .setSupported(true)
+//                        .build())
                 .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                         .setSupported(true)
                         .setServerClientId(getString(R.string.web_client_id))
@@ -113,6 +113,7 @@ public class LoginActivity extends AppCompatActivity {
             startService(authServiceIntent);
         });
         btnAuthGoogleLogin.setOnClickListener(v -> {
+            progressBarDialog.setMessage("Authentication stater").show();
             handleLoginWithGoogle();
         });
         
@@ -146,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        progressBarDialog.dismiss();
                         e.printStackTrace();
                     }
                 });
@@ -155,6 +157,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_GOOGLE_SIGN_IN) {
+            progressBarDialog.setMessage("Information verifying");
             try {
                 SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(data);
                 String idToken = credential.getGoogleIdToken();
@@ -164,6 +167,7 @@ public class LoginActivity extends AppCompatActivity {
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
+                                    progressBarDialog.dismiss();
                                     if (task.isSuccessful()) {
                                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
@@ -178,6 +182,7 @@ public class LoginActivity extends AppCompatActivity {
 
             } catch (Exception e) {
                 e.printStackTrace();
+                progressBarDialog.dismiss();
                 Log.e(TAG, "onActivityResult: " + e.getMessage());
                 Toast.makeText(this, "Đã huỷ đăng nhập!", Toast.LENGTH_SHORT).show();
             }
