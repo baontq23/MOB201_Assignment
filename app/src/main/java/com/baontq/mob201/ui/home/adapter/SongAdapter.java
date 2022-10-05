@@ -25,8 +25,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongVH> {
         this.songItemAction = songItemAction;
     }
 
-    int index = 1;
-
     @NonNull
     @Override
     public SongVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -40,11 +38,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongVH> {
             songItemAction.setOnItemClickListener(song);
         });
         holder.rivImage.setImageResource(R.drawable.ic_music_style);
-        holder.tvIndex.setText("" + index);
+        holder.tvIndex.setText(String.valueOf(position + 1));
         holder.tvTitle.setText(song.getTitle());
         holder.tvDescription.setText(song.getAlbumName());
         holder.ivSongAction.setOnClickListener(v -> songItemAction.showMoreAction(position, song));
-        index++;
     }
 
     @Override

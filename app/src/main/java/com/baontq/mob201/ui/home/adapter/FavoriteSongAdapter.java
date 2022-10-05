@@ -11,22 +11,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.baontq.mob201.R;
 import com.baontq.mob201.model.Song;
+import com.baontq.mob201.ui.home.intefaces.SongItemAction;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 
 public class FavoriteSongAdapter extends RecyclerView.Adapter<FavoriteSongAdapter.FavoriteSongVH> {
     private ArrayList<Song> list;
-    private int index = 1;
+    private SongItemAction songItemAction;
 
-    public FavoriteSongAdapter(ArrayList<Song> list) {
+    public FavoriteSongAdapter(ArrayList<Song> list, SongItemAction songItemAction) {
         this.list = list;
+        this.songItemAction = songItemAction;
     }
 
     public void setList(ArrayList<Song> list) {
         this.list = list;
-        index =1;
-        notifyDataSetChanged();
+
     }
 
     @NonNull
@@ -40,8 +41,9 @@ public class FavoriteSongAdapter extends RecyclerView.Adapter<FavoriteSongAdapte
         Song song = list.get(position);
         holder.title.setText(song.getTitle());
         holder.description.setText(song.getArtistName());
-        holder.index.setText("" + index);
-        index++;
+        holder.index.setText(String.valueOf(position + 1));
+        holder.itemView.setOnClickListener(v -> songItemAction.setOnItemClickListener(song));
+        holder.menuButton.setOnClickListener(v -> songItemAction.showMoreAction(position, song));
     }
 
     @Override
@@ -56,7 +58,6 @@ public class FavoriteSongAdapter extends RecyclerView.Adapter<FavoriteSongAdapte
 
         public FavoriteSongVH(@NonNull View itemView) {
             super(itemView);
-
 
             index = itemView.findViewById(R.id.index);
             image = itemView.findViewById(R.id.image);

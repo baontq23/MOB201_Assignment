@@ -31,32 +31,27 @@
             android:textSize="18sp" />
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/rl_content"
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tl_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/transparent"
+        app:layout_constraintTop_toBottomOf="@id/ll_actionbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tabGravity="start"
+        app:tabSelectedTextColor="@color/primaryColor"
+        app:tabTextAppearance="@style/TabTheme"
+        app:tabTextColor="@color/white" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp_home"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_below="@id/tl_home"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_actionbar"
-        tools:layout_editor_absoluteX="10dp">
+        app:layout_constraintTop_toBottomOf="@id/tl_home"/>
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tl_home"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@android:color/transparent"
-
-            app:tabGravity="start"
-            app:tabSelectedTextColor="@color/primaryColor"
-            app:tabTextAppearance="@style/TabTheme"
-            app:tabTextColor="@color/white" />
-
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vp_home"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/tl_home" />
-    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

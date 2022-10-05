@@ -27,4 +27,5 @@
     <string name="favorite">Yêu thích</string>
     <string name="song">Bài hát</string>
     <string name="feature">Nổi bật</string>
+    <string name="song_favorite_exists">Bài hát đã tồn tại trong danh sách yêu thích!</string>
 </resources>
