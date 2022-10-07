@@ -1,6 +1,13 @@
 package com.baontq.mob201.ui.home.tab.listsong;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.baontq.mob201.R;
 import com.baontq.mob201.databinding.FragmentListSongBinding;
 import com.baontq.mob201.model.Song;
+import com.baontq.mob201.service.PlayerService;
 import com.baontq.mob201.service.SongService;
 import com.baontq.mob201.ui.home.adapter.SongAdapter;
 import com.baontq.mob201.ui.home.intefaces.SongItemAction;
@@ -32,6 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListSongFragment extends Fragment implements SongItemAction {
+    private static final String TAG = "ListSongFragment";
+
     private FirebaseUser user;
     private ListSongViewModel mViewModel;
     private FragmentListSongBinding binding;
@@ -39,10 +49,43 @@ public class ListSongFragment extends Fragment implements SongItemAction {
     private ArrayList<Song> songs;
     private FavoriteSongViewModel favoriteSongViewModel;
     private ArrayList<Song> favoriteSongs;
+    private PlayerService playerService;
+    private boolean isBound = false;
+    private Integer songPlayingPosition = -1;
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            playerService = ((PlayerService.ServiceBinder) binder).getInstance();
+            isBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            playerService = null;
+            isBound = false;
+        }
+    };
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public void onStart() {
+        super.onStart();
+        getActivity().bindService(new Intent(getActivity(), PlayerService.class), connection, Context.BIND_AUTO_CREATE);
+        isBound = true;
+        Log.d(TAG, "onStart: Bind Service");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (isBound) {
+            getActivity().unbindService(connection);
+            isBound = false;
+            Log.d(TAG, "onStop: Unbind Service");
+        }
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         favoriteSongs = new ArrayList<>();
         user = FirebaseAuth.getInstance().getCurrentUser();
         songs = MusicUntil.getListSong(getActivity());
@@ -55,13 +98,17 @@ public class ListSongFragment extends Fragment implements SongItemAction {
         super.onViewCreated(view, savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(ListSongViewModel.class);
         favoriteSongViewModel = new ViewModelProvider(getActivity()).get(FavoriteSongViewModel.class);
-        songAdapter = new SongAdapter(songs, this);
+        songAdapter = new SongAdapter(getActivity(), songs, this);
         favoriteSongViewModel.getData().observe(getViewLifecycleOwner(), listFavorite -> {
-           favoriteSongs.clear();
-           favoriteSongs.addAll(listFavorite);
+            favoriteSongs.clear();
+            favoriteSongs.addAll(listFavorite);
         });
         binding.rvListSong.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         binding.rvListSong.setAdapter(songAdapter);
+        songPlayingPosition = getActivity().getSharedPreferences("current_song_playing", Context.MODE_PRIVATE).getInt("song_position", -1);
+        if (songPlayingPosition != -1) {
+            songAdapter.setHighlightItemPosition(songPlayingPosition);
+        }
     }
 
     @Override
@@ -72,40 +119,87 @@ public class ListSongFragment extends Fragment implements SongItemAction {
 
     @Override
     public void showMoreAction(int position, Song song) {
-        BottomMenu.show(new String[]{"Phát", "Thêm vào danh sách yêu thích"})
-                .setOnIconChangeCallBack(new OnIconChangeCallBack<BottomMenu>() {
-                    @Override
-                    public int getIcon(BottomMenu dialog, int index, String menuText) {
-                        if (index == 0) return R.drawable.ic_play_white;
-                        if (index == 1) return R.drawable.love;
-                        return 0;
-                    }
-                }).setOnMenuItemClickListener(new OnMenuItemClickListener<BottomMenu>() {
-                    @Override
-                    public boolean onClick(BottomMenu dialog, CharSequence text, int index) {
-                        if (index == 0) {
-
+        String playOrPauseAction = getString(R.string.play);
+        Integer playOrPauseIcon = R.drawable.ic_play_white;
+        if (playerService.getSongPlaying() != null) {
+            if (playerService.getSongPlaying().getId() == song.getId()) {
+                if (playerService.isPlaying()) {
+                    playOrPauseAction = getString(R.string.pause);
+                    playOrPauseIcon = R.drawable.ic_pause_white;
+                } else {
+                    playOrPauseAction = getString(R.string.play);
+                    playOrPauseIcon = R.drawable.ic_play_white;
+                }
+            } else {
+                playOrPauseAction = getString(R.string.play);
+                playOrPauseIcon = R.drawable.ic_play_white;
+            }
+        }
+        int finalPlayOrPauseIcon = playOrPauseIcon;
+        BottomMenu.show(new String[]{playOrPauseAction, getString(R.string.add_favorite_song)}).setOnIconChangeCallBack(new OnIconChangeCallBack<BottomMenu>() {
+            @Override
+            public int getIcon(BottomMenu dialog, int index, String menuText) {
+                if (index == 0) {
+                    return finalPlayOrPauseIcon;
+                }
+                if (index == 1) return R.drawable.love;
+                return 0;
+            }
+        }).setOnMenuItemClickListener(new OnMenuItemClickListener<BottomMenu>() {
+            @Override
+            public boolean onClick(BottomMenu dialog, CharSequence text, int index) {
+                if (index == 0) {
+                    updateCurrentSongPosition(position);
+                    if (playerService.isPlaying()) {
+                        if (playerService.getSongPlaying().getId() == song.getId()) {
+                            playerService.pause();
+                        } else {
+                            songAdapter.setHighlightItemPosition(position);
+                            PlayerService.playSong(getActivity(), song);
                         }
-                        if (index == 1) {
-                            if (user != null) {
-                                for (Song s : favoriteSongs) {
-                                    if (s.getId() == song.getId()) {
-                                        PopTip.show(getString(R.string.song_favorite_exists));
-                                        return true;
-                                    }
-                                }
-                                SongService.addFavoriteSong(getActivity(), user.getEmail(), song);
+                    } else {
+                        if (playerService.getSongPlaying() != null) {
+                            if (playerService.getSong().getId() == song.getId()) {
+                                playerService.resume();
                             } else {
-                                PopTip.show(R.string.require_login);
+                                PlayerService.playSong(getActivity(), song);
+                                songAdapter.setHighlightItemPosition(position);
+                            }
+                        } else {
+                            PlayerService.playSong(getActivity(), song);
+                            songAdapter.setHighlightItemPosition(position);
+                        }
+                    }
+
+                }
+                if (index == 1) {
+                    if (user != null) {
+                        for (Song s : favoriteSongs) {
+                            if (s.getId() == song.getId()) {
+                                PopTip.show(getString(R.string.song_favorite_exists));
+                                return true;
                             }
                         }
-                        return false;
+                        SongService.addFavoriteSong(getActivity(), user.getEmail(), song);
+                    } else {
+                        PopTip.show(R.string.require_login);
                     }
-                });
+                }
+                return false;
+            }
+        });
+    }
+
+    private void updateCurrentSongPosition(int position) {
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences("current_song_playing", Context.MODE_PRIVATE).edit();
+        editor.putInt("song_position", position);
+        editor.apply();
     }
 
     @Override
-    public void setOnItemClickListener(Song song) {
-
+    public void setOnItemClickListener(int position, Song song) {
+        songAdapter.setHighlightItemPosition(position);
+        PlayerService.playSong(getActivity(), song);
+        updateCurrentSongPosition(position);
     }
 }

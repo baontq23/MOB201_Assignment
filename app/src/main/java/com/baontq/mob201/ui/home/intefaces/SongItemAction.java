@@ -4,5 +4,5 @@ import com.baontq.mob201.model.Song;
 
 public interface SongItemAction {
     void showMoreAction(int position, Song song);
-    void setOnItemClickListener(Song song);
+    void setOnItemClickListener(int position, Song song);
 }

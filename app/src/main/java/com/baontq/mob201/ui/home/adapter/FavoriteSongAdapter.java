@@ -42,7 +42,7 @@ public class FavoriteSongAdapter extends RecyclerView.Adapter<FavoriteSongAdapte
         holder.title.setText(song.getTitle());
         holder.description.setText(song.getArtistName());
         holder.index.setText(String.valueOf(position + 1));
-        holder.itemView.setOnClickListener(v -> songItemAction.setOnItemClickListener(song));
+        holder.itemView.setOnClickListener(v -> songItemAction.setOnItemClickListener(position,song));
         holder.menuButton.setOnClickListener(v -> songItemAction.showMoreAction(position, song));
     }
 

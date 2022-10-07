@@ -127,7 +127,7 @@ public class FavoriteSongFragment extends Fragment implements SongItemAction {
     }
 
     @Override
-    public void setOnItemClickListener(Song song) {
+    public void setOnItemClickListener(int position, Song song) {
 
     }
 

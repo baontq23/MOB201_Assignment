@@ -24,6 +24,7 @@ public class App extends Application {
 
     private void initialChannelNotification() {
         NotificationChannel channel = new NotificationChannel(PLAYER_CHANNEL_ID, "Player Service", NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setSound(null, null);
         NotificationManager manager = getSystemService(NotificationManager.class);
         if (manager != null) manager.createNotificationChannel(channel);
     }

@@ -28,4 +28,7 @@
     <string name="song">Bài hát</string>
     <string name="feature">Nổi bật</string>
     <string name="song_favorite_exists">Bài hát đã tồn tại trong danh sách yêu thích!</string>
+    <string name="pause">Tạm dừng</string>
+    <string name="play">Phát</string>
+    <string name="add_favorite_song">Thêm vào danh sách yêu thích</string>
 </resources>
