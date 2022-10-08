@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class FavoriteSongViewModel extends ViewModel {
     private FirebaseUser user;
-    private LiveData<ArrayList<Song>> mList;
+    private MutableLiveData<ArrayList<Song>> mList;
 
     public FavoriteSongViewModel() {
         super();

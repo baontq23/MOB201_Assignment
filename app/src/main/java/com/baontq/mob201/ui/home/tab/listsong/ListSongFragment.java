@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +39,6 @@ import com.kongzue.dialogx.interfaces.OnIconChangeCallBack;
 import com.kongzue.dialogx.interfaces.OnMenuItemClickListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ListSongFragment extends Fragment implements SongItemAction {
     private static final String TAG = "ListSongFragment";
@@ -98,10 +99,11 @@ public class ListSongFragment extends Fragment implements SongItemAction {
         super.onViewCreated(view, savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(ListSongViewModel.class);
         favoriteSongViewModel = new ViewModelProvider(getActivity()).get(FavoriteSongViewModel.class);
-        songAdapter = new SongAdapter(getActivity(), songs, this);
+        songAdapter = new SongAdapter(getActivity(), songs, ListSongFragment.this);
         favoriteSongViewModel.getData().observe(getViewLifecycleOwner(), listFavorite -> {
             favoriteSongs.clear();
-            favoriteSongs.addAll(listFavorite);
+            if (listFavorite != null)
+                favoriteSongs.addAll(listFavorite);
         });
         binding.rvListSong.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         binding.rvListSong.setAdapter(songAdapter);

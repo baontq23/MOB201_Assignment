@@ -137,7 +137,6 @@ public class PlayerService extends Service implements MediaPlayer.OnErrorListene
             mediaPlayer.release();
             mediaPlayer = null;
         }
-        Toast.makeText(this, "DestroyPlayerService", Toast.LENGTH_SHORT).show();
     }
 
     public Song getSong() {

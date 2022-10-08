@@ -31,7 +31,7 @@ public class FavoriteSongRepository {
         db = FirebaseFirestore.getInstance();
     }
 
-    public LiveData<ArrayList<Song>> getList(String email) {
+    public MutableLiveData<ArrayList<Song>> getList(String email) {
         db.collection("user").document(email)
                 .collection("favorite_song").addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override

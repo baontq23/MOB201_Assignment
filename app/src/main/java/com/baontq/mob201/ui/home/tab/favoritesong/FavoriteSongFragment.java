@@ -70,7 +70,8 @@ public class FavoriteSongFragment extends Fragment implements SongItemAction {
         mViewModel.getData().observe(getViewLifecycleOwner(), songs -> {
             int index = 0;
             if (favoriteSongs.size() == 0) {
-                favoriteSongs.addAll(songs);
+                if (songs != null)
+                    favoriteSongs.addAll(songs);
                 initData();
             } else {
                 if (songs.size() > favoriteSongs.size()) {
@@ -146,9 +147,9 @@ public class FavoriteSongFragment extends Fragment implements SongItemAction {
 
     private void initData() {
 //        if (favoriteSongAdapter == null) {
-            favoriteSongAdapter = new FavoriteSongAdapter(favoriteSongs, this);
-            binding.rvSongFavorite.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-            binding.rvSongFavorite.setAdapter(favoriteSongAdapter);
+        favoriteSongAdapter = new FavoriteSongAdapter(favoriteSongs, this);
+        binding.rvSongFavorite.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+        binding.rvSongFavorite.setAdapter(favoriteSongAdapter);
 //        } else {
 //            favoriteSongAdapter.setList(favoriteSongs);
 //            favoriteSongAdapter.notifyDataSetChanged();
