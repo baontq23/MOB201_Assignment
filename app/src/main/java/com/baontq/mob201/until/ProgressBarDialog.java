@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.baontq.mob201.R;
 
-public class ProgressBarDialog  {
+public class ProgressBarDialog {
     private View view;
     private TextView msg;
     private ProgressBar progressBar;
@@ -29,8 +29,8 @@ public class ProgressBarDialog  {
 
     private void init() {
         msg = view.findViewById(R.id.msg);
-        progressBar = ( view.findViewById(R.id.loader));
-        ll =  view.findViewById(R.id.ll);
+        progressBar = (view.findViewById(R.id.loader));
+        ll = view.findViewById(R.id.ll);
         builder = new AlertDialog.Builder(view.getContext());
     }
 
@@ -66,7 +66,8 @@ public class ProgressBarDialog  {
     }
 
     public void dismiss() {
-        dialog.dismiss();
+        if (dialog != null)
+            dialog.dismiss();
     }
 
 }

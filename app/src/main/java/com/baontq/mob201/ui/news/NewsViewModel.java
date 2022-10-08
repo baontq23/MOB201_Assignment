@@ -1,19 +1,57 @@
 package com.baontq.mob201.ui.news;
 
+import android.os.Handler;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class NewsViewModel extends ViewModel {
+import com.baontq.mob201.model.News;
+import com.baontq.mob201.until.ParseNews;
+import com.baontq.mob201.until.TaskRunner;
 
-    private final MutableLiveData<String> mText;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+public class NewsViewModel extends ViewModel {
+    private TaskRunner taskRunner;
+    private MutableLiveData<Boolean> isLoading;
+    private MutableLiveData<List<News>> mNewsList;
 
     public NewsViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is news fragment");
+        taskRunner = new TaskRunner();
+        mNewsList = new MutableLiveData<>();
+        isLoading = new MutableLiveData<>(true);
+                taskRunner.execute(new Callable<List<News>>() {
+            @Override
+            public List<News> call() throws Exception {
+                URL url = new URL("https://vnexpress.net/rss/tin-moi-nhat.rss");
+                InputStream inputStream = url.openConnection().getInputStream();
+                ParseNews newsLoader = new ParseNews();
+                return newsLoader.parseNews(inputStream);
+            }
+        }, new TaskRunner.Callback<List<News>>() {
+            @Override
+            public void onComplete(List<News> result) {
+                mNewsList.setValue(result);
+                isLoading.setValue(false);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public MutableLiveData<List<News>> getNewsList() {
+        return mNewsList;
+    }
+
+    public MutableLiveData<Boolean> getIsLoading() {
+        return isLoading;
     }
 }

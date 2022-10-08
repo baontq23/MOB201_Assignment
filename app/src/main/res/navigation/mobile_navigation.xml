@@ -25,7 +25,17 @@
         android:id="@+id/navigation_news"
         android:name="com.baontq.mob201.ui.news.NewsFragment"
         android:label="@string/news"
-        tools:layout="@layout/fragment_news" />
+        tools:layout="@layout/fragment_news" >
+        <action
+            android:id="@+id/action_navigation_news_to_navigation_web_view"
+            app:destination="@id/navigation_web_view"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@+id/navigation_list_song"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_music"
@@ -42,4 +52,9 @@
         android:name="com.baontq.mob201.ui.home.tab.listsong.ListSongFragment"
         android:label="List song"
         tools:layout="@layout/fragment_list_song" />
+    <fragment
+        android:id="@+id/navigation_web_view"
+        android:name="com.baontq.mob201.ui.news.WebViewFragment"
+        android:label="Nội dung"
+        tools:layout="@layout/fragment_web_view" />
 </navigation>
