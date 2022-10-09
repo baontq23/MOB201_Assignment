@@ -1,37 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="10"
     tools:context=".ui.home.tab.feature.HomePageFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_feature_playlist"
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layoutManager="LinearLayoutManager"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_feature_playlist"
-        tools:orientation="horizontal" />
+        android:fontFamily="@font/roboto_bold"
+        android:text="Danh sách phát"
+        android:padding="10dp"
+        android:textColor="@color/primaryColor"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_feature_playlist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/item_feature_playlist"
+            tools:orientation="horizontal" />
+
+        <TextView
+            android:id="@+id/tv_list_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeMinTextSize="14sp"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="Không có danh sách phát nào trên máy của bạn!" />
+    </RelativeLayout>
 
     <TextView
-        android:id="@+id/tv_list_status"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:autoSizeMaxTextSize="20sp"
-        android:autoSizeMinTextSize="14sp"
-        android:autoSizeTextType="uniform"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_bold"
-        android:gravity="center"
-        android:maxLines="1"
-        android:text="Không có danh sách phát nào trên máy của bạn!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/rv_feature_playlist"
-        app:layout_constraintStart_toStartOf="@+id/rv_feature_playlist"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.044" />
+        android:padding="10dp"
+        android:text="Nhạc nghe gần đây"
+        android:textColor="@color/primaryColor"
+        android:textSize="18sp" />
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
