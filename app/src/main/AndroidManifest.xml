@@ -31,6 +31,10 @@
             android:name=".receiver.SongReceiver"
             android:enabled="true"
             android:exported="true" />
+        <receiver
+            android:name=".receiver.NotificationMusicReceiver"
+            android:enabled="true"
+            android:exported="true" />
 
         <service
             android:name=".service.SongService"

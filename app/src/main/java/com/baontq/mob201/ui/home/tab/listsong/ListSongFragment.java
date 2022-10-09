@@ -109,6 +109,7 @@ public class ListSongFragment extends Fragment implements SongItemAction {
         }, new TaskRunner.Callback<ArrayList<Song>>() {
             @Override
             public void onComplete(ArrayList<Song> result) {
+                songs = result;
                 songAdapter = new SongAdapter(getActivity(), result, ListSongFragment.this);
                 binding.rvListSong.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
                 binding.rvListSong.setAdapter(songAdapter);
@@ -124,12 +125,13 @@ public class ListSongFragment extends Fragment implements SongItemAction {
             }
         });
         favoriteSongViewModel = new ViewModelProvider(requireActivity()).get(FavoriteSongViewModel.class);
-        favoriteSongViewModel.getData().observe(getViewLifecycleOwner(), listFavorite -> {
-            favoriteSongs.clear();
-            if (listFavorite != null)
-                favoriteSongs.addAll(listFavorite);
-        });
-
+        if (user != null) {
+            favoriteSongViewModel.getData().observe(getViewLifecycleOwner(), listFavorite -> {
+                favoriteSongs.clear();
+                if (listFavorite != null)
+                    favoriteSongs.addAll(listFavorite);
+            });
+        }
     }
 
     @Override
@@ -176,18 +178,18 @@ public class ListSongFragment extends Fragment implements SongItemAction {
                             playerService.pause();
                         } else {
                             songAdapter.setHighlightItemPosition(position);
-                            PlayerService.playSong(getActivity(), song);
+                            PlayerService.playSong(getActivity(), song, position);
                         }
                     } else {
                         if (playerService.getSongPlaying() != null) {
                             if (playerService.getSong().getId() == song.getId()) {
                                 playerService.resume();
                             } else {
-                                PlayerService.playSong(getActivity(), song);
+                                PlayerService.playSong(getActivity(), song, position);
                                 songAdapter.setHighlightItemPosition(position);
                             }
                         } else {
-                            PlayerService.playSong(getActivity(), song);
+                            PlayerService.playSong(getActivity(), song, position);
                             songAdapter.setHighlightItemPosition(position);
                         }
                     }
@@ -220,7 +222,8 @@ public class ListSongFragment extends Fragment implements SongItemAction {
     @Override
     public void setOnItemClickListener(int position, Song song) {
         songAdapter.setHighlightItemPosition(position);
-        PlayerService.playSong(getActivity(), song);
+        PlayerService.playSong(getActivity(), song, position);
         updateCurrentSongPosition(position);
+        playerService.setListSongs(songs);
     }
 }
