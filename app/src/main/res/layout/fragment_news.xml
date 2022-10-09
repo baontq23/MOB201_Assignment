@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="10"
     tools:context=".ui.news.NewsFragment">
 
     <LinearLayout
@@ -13,10 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:padding="10dp">
 
         <ImageView
             android:layout_width="30dp"
@@ -46,24 +42,23 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:textColor="@color/primaryColor"
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/roboto_bold"
             android:text="Danh mục"
+            android:textColor="@color/primaryColor"
             android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tv_show"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="10dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
             android:fontFamily="@font/roboto_bold"
             android:text="Thu gọn"
-            android:textSize="18sp" />
+            android:textSize="15sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_rss_channel_list"
@@ -79,9 +74,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:textColor="@color/primaryColor"
         android:fontFamily="@font/roboto_bold"
         android:text="Tin mới nhất"
+        android:textColor="@color/primaryColor"
         android:textSize="18sp" />
 
     <androidx.recyclerview.widget.RecyclerView
