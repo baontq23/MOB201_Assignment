@@ -21,10 +21,12 @@ import androidx.fragment.app.Fragment;
 import android.os.FileUtils;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,14 +41,20 @@ import com.baontq.mob201.ui.auth.LoginActivity;
 import com.baontq.mob201.until.FileUntil;
 import com.baontq.mob201.until.ProgressBarDialog;
 import com.bumptech.glide.Glide;
+import com.google.android.material.dialog.MaterialDialogs;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.gson.JsonObject;
 import com.kongzue.dialogx.dialogs.BottomMenu;
+import com.kongzue.dialogx.dialogs.InputDialog;
 import com.kongzue.dialogx.dialogs.MessageDialog;
 import com.kongzue.dialogx.dialogs.PopTip;
+import com.kongzue.dialogx.interfaces.OnBindView;
+import com.kongzue.dialogx.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialogx.interfaces.OnIconChangeCallBack;
+import com.kongzue.dialogx.interfaces.OnInputDialogButtonClickListener;
+import com.kongzue.dialogx.util.InputInfo;
 
 import java.io.File;
 import java.util.Objects;
@@ -85,8 +93,65 @@ public class ProfileFragment extends Fragment {
         binding.ivAvatar.setOnClickListener(v -> changeProfileAvatar());
         binding.btnProfileLogout.setOnClickListener(v -> handleLogout());
         binding.btnProfileEdit.setOnClickListener(v -> handleEditProfile());
+        binding.tvProfileEditName.setOnClickListener(v -> editFullName());
+        binding.tvProfileEditPassword.setOnClickListener(v -> changePassword());
         setInformation();
         return binding.getRoot();
+    }
+
+    private void editFullName() {
+        new InputDialog("Cập nhật thông tin", "Thay đổi họ tên", "Cập nhật", "Huỷ bỏ")
+                .setCancelable(false)
+                .setInputText(user.getDisplayName())
+                .setAutoShowInputKeyboard(false)
+                .setOkButton(new OnInputDialogButtonClickListener<InputDialog>() {
+                    @Override
+                    public boolean onClick(InputDialog dialog, View v, String inputStr) {
+                        if (TextUtils.isEmpty(inputStr)) {
+                            PopTip.show("Chưa nhập họ tên");
+                            return true;
+                        }
+                        progressBarDialog.setMessage("Loading").show();
+                        ProfileService.updateFullName(requireActivity(), inputStr);
+                        return false;
+                    }
+                }).show();
+    }
+
+    private void changePassword() {
+        MessageDialog.show("Cập nhật thông tin", "Thay đổi mật khẩu", "Cập nhật", "Huỷ bỏ")
+                .setCustomView(new OnBindView<MessageDialog>(R.layout.view_change_password) {
+                    @Override
+                    public void onBind(MessageDialog dialog, View v) {
+                    }
+                }).setOkButtonClickListener(new OnDialogButtonClickListener<MessageDialog>() {
+                    @Override
+                    public boolean onClick(MessageDialog dialog, View v) {
+                        EditText edtPassword = dialog.getDialogView().findViewById(R.id.edt_password);
+                        EditText edtRePassword = dialog.getDialogView().findViewById(R.id.edt_re_password);
+                        String password = edtPassword.getText().toString().trim();
+                        String rePassword = edtRePassword.getText().toString().trim();
+                        if (TextUtils.isEmpty(password)) {
+                            PopTip.show("Chưa nhập mật khẩu mới!");
+                            return true;
+                        }
+                        if (password.length() < 8) {
+                            PopTip.show("Mật khẩu phải dài hơn 8 ký tự!");
+                            return true;
+                        }
+                        if (TextUtils.isEmpty(rePassword)) {
+                            PopTip.show("Chưa nhập lại mật khẩu mới!");
+                            return true;
+                        }
+                        if (!rePassword.equals(password)) {
+                            PopTip.show("Mật khẩu không đồng nhất!");
+                            return true;
+                        }
+                        progressBarDialog.setMessage("Re-Authentication").show();
+                        ProfileService.updatePassword(requireActivity(), password);
+                        return false;
+                    }
+                });
     }
 
     private final ActivityResultLauncher<Intent> launcher = registerForActivityResult(
@@ -133,7 +198,7 @@ public class ProfileFragment extends Fragment {
                         }
                         return false;
                     });
-        }else {
+        } else {
             MessageDialog.show(getString(R.string.notification), getString(R.string.require_login), getString(R.string.close));
         }
     }
@@ -188,6 +253,23 @@ public class ProfileFragment extends Fragment {
                         }
                     }
                     break;
+                case ProfileService.ACTION_PROFILE_CHANGE_FULL_NAME:
+                    progressBarDialog.dismiss();
+                    if (intent.getIntExtra(ProfileService.PARAM_PROFILE_CHANGE_FULL_NAME_RESULT, ProfileService.RESULT_PROFILE_UPDATE_FAILED) == ProfileService.RESULT_PROFILE_UPDATE_SUCCESS) {
+                        PopTip.show("Cập nhật thành công!");
+                        binding.tvProfileFullName.setText(user.getDisplayName());
+                    } else {
+                        PopTip.show("Cập nhật thất bại!");
+                    }
+                    break;
+                case ProfileService.ACTION_PROFILE_CHANGE_PASSWORD:
+                    progressBarDialog.dismiss();
+                    if (intent.getIntExtra(ProfileService.PARAM_PROFILE_CHANGE_PASSWORD_RESULT, ProfileService.RESULT_PROFILE_UPDATE_FAILED) == ProfileService.RESULT_PROFILE_UPDATE_SUCCESS) {
+                        PopTip.show("Thay đổi mật khẩu thành công!");
+                    } else {
+                        PopTip.show("Cập nhật thất bại!");
+                    }
+                    break;
                 default:
                     Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show();
                     break;
@@ -201,6 +283,8 @@ public class ProfileFragment extends Fragment {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(AuthService.ACTION_LOGOUT);
         intentFilter.addAction(ProfileService.ACTION_PROFILE_CHANGE_AVATAR);
+        intentFilter.addAction(ProfileService.ACTION_PROFILE_CHANGE_FULL_NAME);
+        intentFilter.addAction(ProfileService.ACTION_PROFILE_CHANGE_PASSWORD);
         requireActivity().registerReceiver(receiver, intentFilter);
     }
 
