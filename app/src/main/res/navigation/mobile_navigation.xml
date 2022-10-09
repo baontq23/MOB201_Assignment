@@ -32,9 +32,13 @@
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@+id/navigation_list_song"
-            app:popUpToInclusive="true"/>
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_navigation_news_to_newsByChannelFragment"
+            app:destination="@id/newsByChannelFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -57,4 +61,17 @@
         android:name="com.baontq.mob201.ui.news.WebViewFragment"
         android:label="Nội dung"
         tools:layout="@layout/fragment_web_view" />
+    <fragment
+        android:id="@+id/newsByChannelFragment"
+        android:name="com.baontq.mob201.ui.news.NewsByChannelFragment"
+        android:label="NewsByChannelFragment"
+        tools:layout="@layout/fragment_list_news_by_channel">
+        <action
+            android:id="@+id/action_newsByChannelFragment_to_navigation_web_view"
+            app:destination="@id/navigation_web_view"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
 </navigation>

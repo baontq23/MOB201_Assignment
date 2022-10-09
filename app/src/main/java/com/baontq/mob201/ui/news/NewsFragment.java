@@ -100,6 +100,9 @@ public class NewsFragment extends Fragment implements NewsItemListener, ChannelI
 
     @Override
     public void setOnItemClickListener(int position) {
-
+        Bundle bundle = new Bundle();
+        bundle.putString("rss_channel", rssChannels.get(position).getLink());
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+        navController.navigate(R.id.action_navigation_news_to_newsByChannelFragment, bundle);
     }
 }
