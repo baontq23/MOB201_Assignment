@@ -79,6 +79,10 @@
             android:layout_toStartOf="@id/btn_profile_logout"
             android:drawableLeft="@drawable/ic_baseline_edit_24"
             android:drawableTint="@color/white"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMaxTextSize="15sp"
+            android:maxLines="1"
+            android:autoSizeMinTextSize="12sp"
             android:fontFamily="@font/roboto_bold"
             android:text="Sửa thông tin"
             app:backgroundTint="#3949AB" />
