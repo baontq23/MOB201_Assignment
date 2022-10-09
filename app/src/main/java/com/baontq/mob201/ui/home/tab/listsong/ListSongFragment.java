@@ -30,6 +30,7 @@ import com.baontq.mob201.ui.home.adapter.SongAdapter;
 import com.baontq.mob201.ui.home.intefaces.SongItemAction;
 import com.baontq.mob201.ui.home.tab.favoritesong.FavoriteSongViewModel;
 import com.baontq.mob201.until.MusicUntil;
+import com.baontq.mob201.until.TaskRunner;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,6 +40,7 @@ import com.kongzue.dialogx.interfaces.OnIconChangeCallBack;
 import com.kongzue.dialogx.interfaces.OnMenuItemClickListener;
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 public class ListSongFragment extends Fragment implements SongItemAction {
     private static final String TAG = "ListSongFragment";
@@ -53,6 +55,7 @@ public class ListSongFragment extends Fragment implements SongItemAction {
     private PlayerService playerService;
     private boolean isBound = false;
     private Integer songPlayingPosition = -1;
+    private TaskRunner taskRunner;
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
@@ -89,7 +92,7 @@ public class ListSongFragment extends Fragment implements SongItemAction {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         favoriteSongs = new ArrayList<>();
         user = FirebaseAuth.getInstance().getCurrentUser();
-        songs = MusicUntil.getListSong(getActivity());
+        taskRunner = new TaskRunner();
         binding = FragmentListSongBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -98,19 +101,35 @@ public class ListSongFragment extends Fragment implements SongItemAction {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(ListSongViewModel.class);
-        favoriteSongViewModel = new ViewModelProvider(getActivity()).get(FavoriteSongViewModel.class);
-        songAdapter = new SongAdapter(getActivity(), songs, ListSongFragment.this);
+        taskRunner.execute(new Callable<ArrayList<Song>>() {
+            @Override
+            public ArrayList<Song> call() throws Exception {
+                return MusicUntil.getListSong(getActivity());
+            }
+        }, new TaskRunner.Callback<ArrayList<Song>>() {
+            @Override
+            public void onComplete(ArrayList<Song> result) {
+                songAdapter = new SongAdapter(getActivity(), result, ListSongFragment.this);
+                binding.rvListSong.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+                binding.rvListSong.setAdapter(songAdapter);
+                songPlayingPosition = requireActivity().getSharedPreferences("current_song_playing", Context.MODE_PRIVATE).getInt("song_position", -1);
+                if (songPlayingPosition != -1) {
+                    songAdapter.setHighlightItemPosition(songPlayingPosition);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
+        });
+        favoriteSongViewModel = new ViewModelProvider(requireActivity()).get(FavoriteSongViewModel.class);
         favoriteSongViewModel.getData().observe(getViewLifecycleOwner(), listFavorite -> {
             favoriteSongs.clear();
             if (listFavorite != null)
                 favoriteSongs.addAll(listFavorite);
         });
-        binding.rvListSong.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        binding.rvListSong.setAdapter(songAdapter);
-        songPlayingPosition = getActivity().getSharedPreferences("current_song_playing", Context.MODE_PRIVATE).getInt("song_position", -1);
-        if (songPlayingPosition != -1) {
-            songAdapter.setHighlightItemPosition(songPlayingPosition);
-        }
+
     }
 
     @Override
