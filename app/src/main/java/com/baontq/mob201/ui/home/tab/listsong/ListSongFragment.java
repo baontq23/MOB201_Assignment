@@ -1,8 +1,10 @@
 package com.baontq.mob201.ui.home.tab.listsong;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -69,6 +71,7 @@ public class ListSongFragment extends Fragment implements SongItemAction {
             isBound = false;
         }
     };
+    private MusicReceiver receiver = new MusicReceiver();
 
     @Override
     public void onStart() {
@@ -76,6 +79,15 @@ public class ListSongFragment extends Fragment implements SongItemAction {
         getActivity().bindService(new Intent(getActivity(), PlayerService.class), connection, Context.BIND_AUTO_CREATE);
         isBound = true;
         Log.d(TAG, "onStart: Bind Service");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(PlayerService.ACTION_NEXT);
+        intentFilter.addAction(PlayerService.ACTION_PREV);
+        requireActivity().registerReceiver(receiver, intentFilter);
     }
 
     @Override
@@ -137,6 +149,7 @@ public class ListSongFragment extends Fragment implements SongItemAction {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        requireActivity().unregisterReceiver(receiver);
         binding = null;
     }
 
@@ -182,7 +195,7 @@ public class ListSongFragment extends Fragment implements SongItemAction {
                         }
                     } else {
                         if (playerService.getSongPlaying() != null) {
-                            if (playerService.getSong().getId() == song.getId()) {
+                            if (playerService.getSongPlaying().getId() == song.getId()) {
                                 playerService.resume();
                             } else {
                                 PlayerService.playSong(getActivity(), song, position);
@@ -225,5 +238,18 @@ public class ListSongFragment extends Fragment implements SongItemAction {
         PlayerService.playSong(getActivity(), song, position);
         updateCurrentSongPosition(position);
         playerService.setListSongs(songs);
+    }
+
+    class MusicReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equalsIgnoreCase(PlayerService.ACTION_NEXT) || intent.getAction().equalsIgnoreCase(PlayerService.ACTION_PREV)) {
+                songAdapter.setHighlightItemPosition(playerService.getPlayIndex());
+                SharedPreferences.Editor editor = requireActivity().getSharedPreferences("current_song_playing", Context.MODE_PRIVATE).edit();
+                editor.putInt("song_position", playerService.getPlayIndex());
+                editor.apply();
+            }
+        }
     }
 }

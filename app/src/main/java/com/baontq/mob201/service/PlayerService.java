@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class PlayerService extends Service implements MediaPlayer.OnErrorListener {
+    public static final String TAG = "PlayerService";
     public static final String PACKAGE_NAME_MUSIC = "com.baontq.mob201.player";
 
     public static final String ACTION_TOGGLE_PAUSE = PACKAGE_NAME_MUSIC + ".toggle_pause";
@@ -97,6 +99,7 @@ public class PlayerService extends Service implements MediaPlayer.OnErrorListene
         remoteViews.setOnClickPendingIntent(R.id.notification_action_next, getPendingIntent(this, ACTION_NEXT));
         Notification notification = new NotificationCompat.Builder(this, App.PLAYER_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_outline_music_24dp)
+                .addAction(R.drawable.ic_play_white, "Dừng chơi nhạc", getPendingIntent(this, ACTION_KILL))
                 .setContentIntent(pendingIntent)
                 .setCustomContentView(remoteViews)
                 .setSound(null)
@@ -124,6 +127,12 @@ public class PlayerService extends Service implements MediaPlayer.OnErrorListene
                             sendNotification(listSongs.get(playIndex));
                             mSong = listSongs.get(playIndex);
                         });
+                        mediaPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
+                            @Override
+                            public void onSeekComplete(MediaPlayer mp) {
+                                Log.d(TAG, "onSeekComplete: " + mp.getCurrentPosition());
+                            }
+                        });
                         mediaPlayer.setOnErrorListener(this);
                         mediaPlayer.setLooping(false);
                     } else {
@@ -140,14 +149,12 @@ public class PlayerService extends Service implements MediaPlayer.OnErrorListene
                 break;
             case ACTION_PAUSE:
                 pause();
-                sendNotification(mSong);
                 break;
             case ACTION_STOP:
                 stop();
                 break;
             case ACTION_RESUME:
                 resume();
-                sendNotification(mSong);
                 break;
             case ACTION_NEXT:
                 next();
@@ -177,47 +184,65 @@ public class PlayerService extends Service implements MediaPlayer.OnErrorListene
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
             length = mediaPlayer.getCurrentPosition();
+            sendNotification(mSong);
+        }
+    }
+
+    public void seek(int progress) {
+
+        if (mediaPlayer != null) {
+            mediaPlayer.pause();
+            length = progress;
+            mediaPlayer.seekTo(progress);
+            sendNotification(mSong);
         }
     }
 
     public void next() {
-        try {
-            if (playIndex == listSongs.size() - 1) {
-                playIndex = 0;
-            } else {
-                playIndex++;
+        if (listSongs != null) {
+            try {
+                if (playIndex == listSongs.size() - 1) {
+                    playIndex = 0;
+                } else {
+                    playIndex++;
+                }
+                mediaPlayer.reset();
+                mediaPlayer.setDataSource(listSongs.get(playIndex).getData());
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+                mSong = listSongs.get(playIndex);
+                sendBroadcast(new Intent(ACTION_NEXT));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            mediaPlayer.reset();
-            mediaPlayer.setDataSource(listSongs.get(playIndex).getData());
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-            mSong = listSongs.get(playIndex);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
     public void prev() {
-        try {
-            if (playIndex == 0) {
-                playIndex = listSongs.size() - 1;
-            } else {
-                playIndex--;
+        if (listSongs != null) {
+            try {
+                if (playIndex == 0) {
+                    playIndex = listSongs.size() - 1;
+                } else {
+                    playIndex--;
+                }
+                mediaPlayer.reset();
+                mediaPlayer.setDataSource(listSongs.get(playIndex).getData());
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+                mSong = listSongs.get(playIndex);
+                sendBroadcast(new Intent(ACTION_PREV));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            mediaPlayer.reset();
-            mediaPlayer.setDataSource(listSongs.get(playIndex).getData());
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-            mSong = listSongs.get(playIndex);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
     public void resume() {
-        if (!mediaPlayer.isPlaying()) {
+        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
             mediaPlayer.seekTo(length);
             mediaPlayer.start();
+            sendNotification(mSong);
         }
     }
 
@@ -247,11 +272,16 @@ public class PlayerService extends Service implements MediaPlayer.OnErrorListene
         this.listSongs = listSongs;
     }
 
-    public Song getSong() {
-        return mSong;
-    }
-
     public Song getSongPlaying() {
         return mSong;
     }
+
+    public int getPlayIndex() {
+        return playIndex;
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
+
 }
