@@ -80,8 +80,6 @@ public class MusicFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
         binding.ibPlayerActionPlayPause.setOnClickListener(v -> {
             if (playerService != null) {
                 if (playerService.isPlaying()) {
@@ -117,20 +115,22 @@ public class MusicFragment extends Fragment {
                 requireActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        binding.tvPlayerSongTitle.setText(playerService.getSongPlaying().getTitle());
-                        binding.tvPlayerSongDescription.setText(playerService.getSongPlaying().getArtistName());
-                        // Displaying Total Duration time
-                        binding.tvPlayerSongDuration.setText(MusicUntil.milliSecondsToTimer(totalDuration));
-                        // Displaying time completed playing
-                        binding.tvPlayerCurrentTime.setText(MusicUntil.milliSecondsToTimer(currentDuration));
-                        // Updating progress bar
-                        int progress = playerService.getMediaPlayer().getCurrentPosition() / 1000;
-                        binding.sbSongProgress.setProgress(progress);
-                        if (playerService.isPlaying()) {
-                            binding.ibPlayerActionPlayPause.setImageResource(R.drawable.ic_pause_white);
-                        } else {
-                            binding.ibPlayerActionPlayPause.setImageResource(R.drawable.ic_play_white);
-                            scheduledFuture.cancel(false);
+                        if (playerService != null && playerService.getMediaPlayer() != null) {
+                            binding.tvPlayerSongTitle.setText(playerService.getSongPlaying().getTitle());
+                            binding.tvPlayerSongDescription.setText(playerService.getSongPlaying().getArtistName());
+                            // Displaying Total Duration time
+                            binding.tvPlayerSongDuration.setText(MusicUntil.milliSecondsToTimer(totalDuration));
+                            // Displaying time completed playing
+                            binding.tvPlayerCurrentTime.setText(MusicUntil.milliSecondsToTimer(currentDuration));
+                            // Updating progress bar
+                            int progress = playerService.getMediaPlayer().getCurrentPosition() / 1000;
+                            binding.sbSongProgress.setProgress(progress);
+                            if (playerService.isPlaying()) {
+                                binding.ibPlayerActionPlayPause.setImageResource(R.drawable.ic_pause_white);
+                            } else {
+                                binding.ibPlayerActionPlayPause.setImageResource(R.drawable.ic_play_white);
+                                scheduledFuture.cancel(false);
+                            }
                         }
                     }
                 });
@@ -139,7 +139,7 @@ public class MusicFragment extends Fragment {
             }
         };
         if (playerService != null && playerService.isPlaying()) {
-            scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(runnable, 1, 1, TimeUnit.SECONDS);
+            scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(runnable, 0, 500, TimeUnit.MILLISECONDS);
             binding.ibPlayerActionPlayPause.setImageResource(R.drawable.ic_pause_white);
             binding.sbSongProgress.setMax((int) (playerService.getSongPlaying().getDuration() / 1000));
         }

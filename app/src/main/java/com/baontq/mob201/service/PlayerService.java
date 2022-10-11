@@ -199,7 +199,7 @@ public class PlayerService extends Service implements MediaPlayer.OnErrorListene
     }
 
     public void next() {
-        if (listSongs != null) {
+        if (listSongs != null && mediaPlayer != null) {
             try {
                 if (playIndex == listSongs.size() - 1) {
                     playIndex = 0;
@@ -219,7 +219,7 @@ public class PlayerService extends Service implements MediaPlayer.OnErrorListene
     }
 
     public void prev() {
-        if (listSongs != null) {
+        if (listSongs != null && mediaPlayer != null) {
             try {
                 if (playIndex == 0) {
                     playIndex = listSongs.size() - 1;
