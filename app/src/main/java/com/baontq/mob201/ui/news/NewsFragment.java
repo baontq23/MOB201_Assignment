@@ -1,5 +1,7 @@
 package com.baontq.mob201.ui.news;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.TransitionManager;
 
 import com.baontq.mob201.R;
 import com.baontq.mob201.databinding.FragmentNewsBinding;
@@ -74,11 +77,28 @@ public class NewsFragment extends Fragment implements NewsItemListener, ChannelI
     private void initUI() {
         progressBarDialog.setMessage("Loading");
         binding.tvShow.setOnClickListener(v -> {
+            ViewGroup viewGroup = getView().findViewById(R.id.ll_news_feature_channel);
             if (binding.rvRssChannelList.getVisibility() == View.VISIBLE) {
-                binding.rvRssChannelList.setVisibility(View.GONE);
+                binding.rvRssChannelList.animate().translationX(binding.rvRssChannelList.getWidth()).setDuration(500).alpha(0.0f).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        TransitionManager.beginDelayedTransition(viewGroup);
+                        binding.rvRssChannelList.clearAnimation();
+                        binding.rvRssChannelList.setVisibility(View.GONE);
+                    }
+                }).start();
+
                 binding.tvShow.setText("Mở rộng");
             } else {
-                binding.rvRssChannelList.setVisibility(View.VISIBLE);
+                binding.rvRssChannelList.animate().translationX(0).setDuration(500).alpha(1.0f).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        binding.rvRssChannelList.setVisibility(View.VISIBLE);
+                        TransitionManager.beginDelayedTransition(viewGroup);
+                    }
+                }).start();
                 binding.tvShow.setText("Thu gọn");
             }
         });
