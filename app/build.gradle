@@ -4,6 +4,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/Users/baontq/Development/AndroidProject/MOB201_Assignment/app/mob201-keystore')
+            storePassword 'Bao03072003'
+            keyAlias 'mob201'
+            keyPassword 'Bao03072003'
+        }
+    }
     compileSdk 33
 
     defaultConfig {
@@ -14,6 +22,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
     }
 
     buildTypes {

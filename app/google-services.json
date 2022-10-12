@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "23742456234",
+    "firebase_url": "https://mob201-assignment-default-rtdb.firebaseio.com",
     "project_id": "mob201-assignment",
     "storage_bucket": "mob201-assignment.appspot.com"
   },
