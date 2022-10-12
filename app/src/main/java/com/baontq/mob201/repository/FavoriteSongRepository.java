@@ -45,6 +45,7 @@ public class FavoriteSongRepository {
                             favoriteSongs.add(document.toObject(Song.class));
                         }
                         list.setValue(favoriteSongs);
+                        Log.d(TAG, "onEvent: Fetch favorite song data");
                     }
                 });
         return list;

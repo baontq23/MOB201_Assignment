@@ -7,13 +7,11 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.baontq.mob201.dao.SongDAO;
 import com.baontq.mob201.model.Song;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.kongzue.dialogx.dialogs.PopTip;
@@ -24,12 +22,15 @@ import java.util.ArrayList;
 public class SongService extends IntentService {
 
     public static final String ACTION_GET_LIST_FAVORITE_SONG = "com.baontq.mob201.service.action.GET_LIST_FAVORITE_SONG";
+    public static final String ACTION_GET_LIST_RECENT_SONG = "com.baontq.mob201.service.action.GET_LIST_RECENT_SONG";
     public static final String ACTION_ADD_FAVORITE_SONG = "com.baontq.mob201.service.action.ADD_FAVORITE_SONG";
     public static final String ACTION_REMOVE_FAVORITE_SONG = "com.baontq.mob201.service.action.REMOVE_FAVORITE_SONG";
+    public static final String ACTION_ADD_RECENT_SONG = "com.baontq.mob201.service.action.ADD_RECENT_SONG";
 
     public static final String PARAM_EMAIL = "user_email";
     public static final String PARAM_SONG = "song_request";
     public static final String RESULT_LIST_FAVORITE_SONG = "list_favorite_song_data";
+    public static final String RESULT_LIST_RECENT_SONG = "list_recent_song_data";
     private static final String TAG = "SongService";
     private FirebaseFirestore db;
 
@@ -42,6 +43,18 @@ public class SongService extends IntentService {
         Intent intent = new Intent(context, SongService.class);
         intent.setAction(ACTION_GET_LIST_FAVORITE_SONG);
         intent.putExtra(PARAM_EMAIL, email);
+        context.startService(intent);
+    }
+    public static void getListRecentSongSong(Context context) {
+        Intent intent = new Intent(context, SongService.class);
+        intent.setAction(ACTION_GET_LIST_RECENT_SONG);
+        context.startService(intent);
+    }
+
+    public static void addRecentSong(Context context, Song song) {
+        Intent intent = new Intent(context, SongService.class);
+        intent.setAction(ACTION_ADD_RECENT_SONG);
+        intent.putExtra(PARAM_SONG, song);
         context.startService(intent);
     }
 
@@ -74,13 +87,40 @@ public class SongService extends IntentService {
                 handleAddFavoriteSongAction(intent);
             } else if (intent.getAction().equalsIgnoreCase(ACTION_REMOVE_FAVORITE_SONG)) {
                 handleRemoveFavoriteSongAction(intent);
+            } else if (intent.getAction().equalsIgnoreCase(ACTION_ADD_RECENT_SONG)) {
+                handleAddRecentSongAction(intent);
+            }else if (intent.getAction().equalsIgnoreCase(ACTION_GET_LIST_RECENT_SONG)) {
+                handleGetListRecentSong();
             }
         }
     }
 
+    private void handleGetListRecentSong() {
+        Intent broadcastIntent = new Intent();
+        SongDAO dao = new SongDAO(this);
+        broadcastIntent.setAction(ACTION_GET_LIST_RECENT_SONG);
+        broadcastIntent.putParcelableArrayListExtra(RESULT_LIST_RECENT_SONG, dao.getListRecentSong());
+        sendBroadcast(broadcastIntent);
+    }
+
+    private void handleAddRecentSongAction(Intent intent) {
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(ACTION_ADD_RECENT_SONG);
+        SongDAO dao = new SongDAO(this);
+        Song song = intent.getParcelableExtra(PARAM_SONG);
+        if (dao.storeRecentSong(song) > 0) {
+            ArrayList<Song> list = dao.getListRecentSong();
+            broadcastIntent.putParcelableArrayListExtra(RESULT_LIST_RECENT_SONG, list);
+            sendBroadcast(broadcastIntent);
+            Log.d(TAG, "handleAddRecentSongAction: Added!!");
+        } else {
+            Log.d(TAG, "handleAddRecentSongAction: Error!!");
+        }
+
+    }
+
     private void handleGetFavoriteSongAction(Intent intent) {
         Intent broadcastIntent = new Intent();
-        ArrayList<Song> preList = new ArrayList<>();
         broadcastIntent.setAction(ACTION_GET_LIST_FAVORITE_SONG);
         db.collection("user").document(intent.getStringExtra(PARAM_EMAIL))
                 .collection("favorite_song").addSnapshotListener(new EventListener<QuerySnapshot>() {

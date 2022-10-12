@@ -75,6 +75,7 @@ public class PlayerService extends Service implements MediaPlayer.OnErrorListene
         intent.putExtra(PARAM_SONG, song);
         intent.putExtra(PARAM_SONG_INDEX, index);
         context.startService(intent);
+        SongService.addRecentSong(context, song);
     }
 
     public PlayerService() {

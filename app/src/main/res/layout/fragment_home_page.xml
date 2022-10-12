@@ -43,13 +43,36 @@
             android:text="Không có danh sách phát nào trên máy của bạn!" />
     </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/roboto_bold"
-        android:padding="10dp"
-        android:text="Nhạc nghe gần đây"
-        android:textColor="@color/primaryColor"
-        android:textSize="18sp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/tv_title_recent_song"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
+            android:padding="10dp"
+            android:text="Nhạc nghe gần đây"
+            android:textColor="@color/primaryColor"
+            android:textSize="18sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list_recent_song"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tv_title_recent_song"
+            tools:itemCount="5"
+            tools:listitem="@layout/item_song_normal" />
+
+        <TextView
+            android:id="@+id/tv_list_recent_status"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tv_title_recent_song"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="center"
+            android:text="Danh sách chơi gần đây đang trống!"
+            android:visibility="gone" />
+    </RelativeLayout>
 </LinearLayout>
