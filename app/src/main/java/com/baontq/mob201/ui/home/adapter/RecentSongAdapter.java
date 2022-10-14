@@ -27,6 +27,10 @@ public class RecentSongAdapter extends RecyclerView.Adapter<RecentSongAdapter.So
         this.songItemAction = songItemAction;
     }
 
+    public void setList(List<Song> list) {
+        this.list = list;
+    }
+
     @NonNull
     @Override
     public SongVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -60,5 +64,10 @@ public class RecentSongAdapter extends RecyclerView.Adapter<RecentSongAdapter.So
             tvTitle = itemView.findViewById(R.id.tv_title);
             tvDescription = itemView.findViewById(R.id.tv_description);
         }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return list.get(position).getId();
     }
 }

@@ -11,14 +11,12 @@
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_home_to_list_music"
-            app:destination="@id/navigation_list_song"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
+            android:id="@+id/action_navigation_home_to_listSongByPlaylistFragment"
+            app:destination="@id/listSongByPlaylistFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@+id/navigation_list_song"
-            app:popUpToInclusive="true" />
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -74,4 +72,9 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
+    <fragment
+        android:id="@+id/listSongByPlaylistFragment"
+        android:name="com.baontq.mob201.ui.listsong.ListSongByPlaylistFragment"
+        android:label="fragment_list_song_by_playlist"
+        tools:layout="@layout/fragment_list_song_by_playlist" />
 </navigation>

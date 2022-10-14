@@ -10,15 +10,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.baontq.mob201.R;
 import com.baontq.mob201.model.Playlist;
+import com.baontq.mob201.ui.home.intefaces.PlaylistItemAction;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
 
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.PlaylistVH> {
     private List<Playlist> list;
+    private PlaylistItemAction playlistItemAction;
 
-    public PlaylistAdapter(List<Playlist> list) {
+    public PlaylistAdapter(List<Playlist> list, PlaylistItemAction playlistItemAction) {
         this.list = list;
+        this.playlistItemAction = playlistItemAction;
     }
 
     @NonNull
@@ -31,6 +34,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
     public void onBindViewHolder(@NonNull PlaylistVH holder, int position) {
         holder.playlistTitle.setText(list.get(position).getName());
         holder.itemView.setOnClickListener(v -> {
+            playlistItemAction.onItemClickListener(position, list.get(position));
         });
 
         holder.playlistImage.setImageResource(R.drawable.music_round_gradient);

@@ -26,6 +26,7 @@ public class SongService extends IntentService {
     public static final String ACTION_ADD_FAVORITE_SONG = "com.baontq.mob201.service.action.ADD_FAVORITE_SONG";
     public static final String ACTION_REMOVE_FAVORITE_SONG = "com.baontq.mob201.service.action.REMOVE_FAVORITE_SONG";
     public static final String ACTION_ADD_RECENT_SONG = "com.baontq.mob201.service.action.ADD_RECENT_SONG";
+    public static final String ACTION_REMOVE_RECENT_SONG = "com.baontq.mob201.service.action.REMOVE_RECENT_SONG";
 
     public static final String PARAM_EMAIL = "user_email";
     public static final String PARAM_SONG = "song_request";
@@ -45,6 +46,7 @@ public class SongService extends IntentService {
         intent.putExtra(PARAM_EMAIL, email);
         context.startService(intent);
     }
+
     public static void getListRecentSongSong(Context context) {
         Intent intent = new Intent(context, SongService.class);
         intent.setAction(ACTION_GET_LIST_RECENT_SONG);
@@ -54,6 +56,13 @@ public class SongService extends IntentService {
     public static void addRecentSong(Context context, Song song) {
         Intent intent = new Intent(context, SongService.class);
         intent.setAction(ACTION_ADD_RECENT_SONG);
+        intent.putExtra(PARAM_SONG, song);
+        context.startService(intent);
+    }
+
+    public static void removeRecentSong(Context context, Song song) {
+        Intent intent = new Intent(context, SongService.class);
+        intent.setAction(ACTION_REMOVE_RECENT_SONG);
         intent.putExtra(PARAM_SONG, song);
         context.startService(intent);
     }
@@ -89,9 +98,23 @@ public class SongService extends IntentService {
                 handleRemoveFavoriteSongAction(intent);
             } else if (intent.getAction().equalsIgnoreCase(ACTION_ADD_RECENT_SONG)) {
                 handleAddRecentSongAction(intent);
-            }else if (intent.getAction().equalsIgnoreCase(ACTION_GET_LIST_RECENT_SONG)) {
+            } else if (intent.getAction().equalsIgnoreCase(ACTION_GET_LIST_RECENT_SONG)) {
                 handleGetListRecentSong();
+            } else if (intent.getAction().equalsIgnoreCase(ACTION_REMOVE_RECENT_SONG)) {
+                handleRemoveRecentSongAction(intent);
             }
+        }
+    }
+
+    private void handleRemoveRecentSongAction(Intent intent) {
+        //Intent broadcastIntent = new Intent();
+        Song song = intent.getParcelableExtra(PARAM_SONG);
+        SongDAO dao = new SongDAO(this);
+        if (dao.deleteRecentSongById(song.getId()) > 0) {
+            Log.d(TAG, "handleRemoveRecentSongAction: Done");
+//            broadcastIntent.setAction(ACTION_GET_LIST_RECENT_SONG);
+//            broadcastIntent.putParcelableArrayListExtra(RESULT_LIST_RECENT_SONG, dao.getListRecentSong());
+//            sendBroadcast(broadcastIntent);
         }
     }
 

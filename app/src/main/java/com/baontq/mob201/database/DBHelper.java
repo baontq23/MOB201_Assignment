@@ -10,7 +10,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     private static final String RECENT_SONG_TABLE_CREATE = "CREATE TABLE " + RECENT_SONG_TABLE_NAME + " (" +
             "song_id INTEGER PRIMARY KEY," +
-            "song_title TEXT NOT NULL," +
+            "song_title TEXT UNIQUE NOT NULL," +
             "song_track_number INTEGER," +
             "song_year INTEGER," +
             "song_duration INTEGER NOT NULL," +

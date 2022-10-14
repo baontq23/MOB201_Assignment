@@ -54,4 +54,8 @@ public class SongDAO {
         }
         return insertResult;
     }
+
+    public int deleteRecentSongById(int id) {
+        return db.delete(DBHelper.RECENT_SONG_TABLE_NAME, "song_id = ?", new String[]{String.valueOf(id)});
+    }
 }
