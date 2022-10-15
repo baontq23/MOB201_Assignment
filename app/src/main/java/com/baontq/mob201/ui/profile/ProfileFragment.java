@@ -2,15 +2,21 @@ package com.baontq.mob201.ui.profile;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -18,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.os.FileUtils;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -56,7 +63,12 @@ import com.kongzue.dialogx.interfaces.OnIconChangeCallBack;
 import com.kongzue.dialogx.interfaces.OnInputDialogButtonClickListener;
 import com.kongzue.dialogx.util.InputInfo;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -72,6 +84,7 @@ public class ProfileFragment extends Fragment {
     private ResponseReceiver receiver = new ResponseReceiver();
     private static final int RESULT_IMAGE_CAPTURE = 0;
     private static final int RESULT_IMAGE_MEDIA = 1;
+    private String photoPath;
     ProgressBarDialog progressBarDialog;
 
     @Override
@@ -171,6 +184,29 @@ public class ProfileFragment extends Fragment {
             }
     );
 
+    private File createImageFile() throws IOException {
+        String imageFileName = "temporary_file";
+        File storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName, ".jpg", storageDir);
+        photoPath = image.getAbsolutePath();
+        return image;
+    }
+
+
+    private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    progressBarDialog.setMessage("Đang tải ảnh lên máy chủ!").show();
+                    Intent intent = new Intent(getContext(), ProfileService.class);
+                    intent.setAction(ProfileService.ACTION_PROFILE_CHANGE_AVATAR);
+                    intent.putExtra(ProfileService.PARAM_IMAGE_FILE, photoPath);
+                    requireActivity().startService(intent);
+                }
+            }
+    );
+
 
     private void changeProfileAvatar() {
         if (user != null) {
@@ -190,7 +226,33 @@ public class ProfileFragment extends Fragment {
                     .setMessage("Chọn ảnh")
                     .setOnMenuItemClickListener((dialog, text, index) -> {
                         if (index == 0) {
-                            Intent takePic = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+                                if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.CAMERA)) {
+                                    ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA
+                                    }, RESULT_IMAGE_CAPTURE);
+
+                                } else {
+                                    ActivityCompat.requestPermissions(requireActivity(),
+                                            new String[]{
+                                                    Manifest.permission.CAMERA
+                                            }, 1);
+                                }
+                            } else {
+                                Intent takePic = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                File photo = null;
+                                try {
+                                    photo = createImageFile();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                if (photo != null) {
+                                    Uri photoUri = FileProvider.getUriForFile(requireActivity(), "com.baontq.mob201.file_provider", photo);
+                                    takePic.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                                    cameraLauncher.launch(takePic);
+                                }
+                            }
+
 
                         } else {
                             Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -220,11 +282,11 @@ public class ProfileFragment extends Fragment {
     private void handleEditProfile() {
         if (binding.llInformation.getVisibility() == View.INVISIBLE) {
             binding.llInformation.setVisibility(View.VISIBLE);
-            binding.btnProfileEdit.setText("Xong");
+            binding.btnProfileEdit.setText(R.string.done);
             binding.btnProfileEdit.setIconResource(R.drawable.ic_baseline_done_24);
         } else {
             binding.llInformation.setVisibility(View.INVISIBLE);
-            binding.btnProfileEdit.setText("Sửa thông tin");
+            binding.btnProfileEdit.setText(R.string.profile_fragment_edit_info);
             binding.btnProfileEdit.setIconResource(R.drawable.ic_baseline_edit_24);
         }
 
