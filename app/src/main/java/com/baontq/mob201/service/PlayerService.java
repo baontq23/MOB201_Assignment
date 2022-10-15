@@ -244,6 +244,7 @@ public class PlayerService extends Service implements MediaPlayer.OnErrorListene
             mediaPlayer.seekTo(length);
             mediaPlayer.start();
             sendNotification(mSong);
+            sendBroadcast(new Intent(ACTION_RESUME));
         }
     }
 

@@ -149,7 +149,7 @@ public class MusicFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equalsIgnoreCase(PlayerService.ACTION_PREV) || intent.getAction().equalsIgnoreCase(PlayerService.ACTION_NEXT)) {
+            if (intent.getAction().equalsIgnoreCase(PlayerService.ACTION_PREV) || intent.getAction().equalsIgnoreCase(PlayerService.ACTION_NEXT) || intent.getAction().equalsIgnoreCase(PlayerService.ACTION_RESUME)) {
                 if (scheduledFuture == null || scheduledFuture.isCancelled()) {
                     updateUI();
                 }
@@ -163,6 +163,7 @@ public class MusicFragment extends Fragment {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(PlayerService.ACTION_NEXT);
         intentFilter.addAction(PlayerService.ACTION_PREV);
+        intentFilter.addAction(PlayerService.ACTION_RESUME);
         requireActivity().registerReceiver(receiver, intentFilter);
         requireActivity().bindService(new Intent(getActivity(), PlayerService.class), connection, Context.BIND_AUTO_CREATE);
         isBound = true;
