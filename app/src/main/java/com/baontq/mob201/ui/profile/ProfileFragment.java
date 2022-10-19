@@ -353,6 +353,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+
         requireActivity().unregisterReceiver(receiver);
     }
 

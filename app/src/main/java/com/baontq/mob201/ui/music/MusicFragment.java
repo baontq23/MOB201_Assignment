@@ -96,10 +96,14 @@ public class MusicFragment extends Fragment {
             }
         });
         binding.ibPlayerActionNext.setOnClickListener(v -> {
+            if (scheduledFuture != null)
+                scheduledFuture.cancel(false);
             playerService.next();
         });
 
         binding.ibPlayerActionPrev.setOnClickListener(v -> {
+            if (scheduledFuture != null)
+                scheduledFuture.cancel(false);
             playerService.prev();
         });
     }
@@ -109,32 +113,33 @@ public class MusicFragment extends Fragment {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                long totalDuration = playerService.getMediaPlayer().getDuration();
-                long currentDuration = playerService.getMediaPlayer()
-                        .getCurrentPosition();
-                requireActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (playerService != null && playerService.getMediaPlayer() != null) {
-                            binding.tvPlayerSongTitle.setText(playerService.getSongPlaying().getTitle());
-                            binding.tvPlayerSongDescription.setText(playerService.getSongPlaying().getArtistName());
-                            // Displaying Total Duration time
-                            binding.tvPlayerSongDuration.setText(MusicUntil.milliSecondsToTimer(totalDuration));
-                            // Displaying time completed playing
-                            binding.tvPlayerCurrentTime.setText(MusicUntil.milliSecondsToTimer(currentDuration));
-                            // Updating progress bar
-                            int progress = playerService.getMediaPlayer().getCurrentPosition() / 1000;
-                            binding.sbSongProgress.setProgress(progress);
-                            if (playerService.isPlaying()) {
-                                binding.ibPlayerActionPlayPause.setImageResource(R.drawable.ic_pause_white);
-                            } else {
-                                binding.ibPlayerActionPlayPause.setImageResource(R.drawable.ic_play_white);
-                                scheduledFuture.cancel(false);
+                if (playerService != null && playerService.isPlaying()) {
+                    long totalDuration = playerService.getMediaPlayer().getDuration();
+                    long currentDuration = playerService.getMediaPlayer()
+                            .getCurrentPosition();
+                    requireActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (playerService != null && playerService.getMediaPlayer() != null) {
+                                binding.tvPlayerSongTitle.setText(playerService.getSongPlaying().getTitle());
+                                binding.tvPlayerSongDescription.setText(playerService.getSongPlaying().getArtistName());
+                                // Displaying Total Duration time
+                                binding.tvPlayerSongDuration.setText(MusicUntil.milliSecondsToTimer(totalDuration));
+                                // Displaying time completed playing
+                                binding.tvPlayerCurrentTime.setText(MusicUntil.milliSecondsToTimer(currentDuration));
+                                // Updating progress bar
+                                int progress = playerService.getMediaPlayer().getCurrentPosition() / 1000;
+                                binding.sbSongProgress.setProgress(progress);
+                                if (playerService.isPlaying()) {
+                                    binding.ibPlayerActionPlayPause.setImageResource(R.drawable.ic_pause_white);
+                                } else {
+                                    binding.ibPlayerActionPlayPause.setImageResource(R.drawable.ic_play_white);
+                                    scheduledFuture.cancel(false);
+                                }
                             }
                         }
-                    }
-                });
-
+                    });
+                }
                 Log.d(TAG, "run: " + playerService.getMediaPlayer().getCurrentPosition());
             }
         };

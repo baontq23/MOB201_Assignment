@@ -53,6 +53,7 @@ public class PlayerService extends Service implements MediaPlayer.OnErrorListene
         if (mediaPlayer != null) {
             try {
                 mediaPlayer.stop();
+                mediaPlayer.reset();
                 mediaPlayer.release();
             } finally {
                 mediaPlayer = null;
@@ -177,6 +178,7 @@ public class PlayerService extends Service implements MediaPlayer.OnErrorListene
 
     public void stop() {
         mediaPlayer.stop();
+        mediaPlayer.reset();
         mediaPlayer.release();
         mediaPlayer = null;
     }
@@ -207,6 +209,7 @@ public class PlayerService extends Service implements MediaPlayer.OnErrorListene
                 } else {
                     playIndex++;
                 }
+                if (mediaPlayer.isPlaying()) mediaPlayer.stop();
                 mediaPlayer.reset();
                 mediaPlayer.setDataSource(listSongs.get(playIndex).getData());
                 mediaPlayer.prepare();
@@ -227,6 +230,7 @@ public class PlayerService extends Service implements MediaPlayer.OnErrorListene
                 } else {
                     playIndex--;
                 }
+                if (mediaPlayer.isPlaying()) mediaPlayer.stop();
                 mediaPlayer.reset();
                 mediaPlayer.setDataSource(listSongs.get(playIndex).getData());
                 mediaPlayer.prepare();
@@ -265,6 +269,7 @@ public class PlayerService extends Service implements MediaPlayer.OnErrorListene
     public void onDestroy() {
         super.onDestroy();
         if (mediaPlayer != null) {
+            mediaPlayer.reset();
             mediaPlayer.release();
             mediaPlayer = null;
         }
